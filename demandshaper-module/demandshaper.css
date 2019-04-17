@@ -178,6 +178,17 @@ body {padding:0}
   background-repeat: no-repeat;
   margin-right:10px;
 }
+
+.icon-edmi-am, .icon-smartmeter {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-image: url('smartmeter.png');
+  background-position: 0 0;
+  background-size:18px;
+  background-repeat: no-repeat;
+  margin-right:10px;
+}
   
 .btn-group button{
   width:auto;
@@ -315,4 +326,26 @@ body {padding:0}
 }
 
 
+.value-block {
+    width:120px;
+    float:left; 
+    cursor:pointer;
+}
 
+.value-block:hover {
+    /*background-color:rgba(234,81,14,0.1);*/
+    border-bottom:2px solid #ea510e;
+    
+}
+
+.value-block-inner {
+    padding:5px;
+}
+
+.graph-time {
+    color:#000 !important;
+}
+
+.graph-nav {
+    color:#000 !important;
+}

@@ -83,6 +83,8 @@ if (window.session!=undefined) {
   <?php
       if (strpos($device,"emonth")!==false) {
           include "Modules/demandshaper/emonth.php";
+      } else if (strpos($device,"smartmeter")!==false) {
+          include "Modules/demandshaper/smartmeter.php";
       } else {
           include "Modules/demandshaper/general.php";
       }
@@ -111,7 +113,7 @@ if (window.session!=undefined) {
           }
           n=0
           for (var z in result) {
-              if (result[z].type=="emonth") {
+              if (result[z].type=="emonth" || result[z].type=="edmi-am") {
                   devices[result[z].nodeid] = result[z];
                   // sidebar list
                   border = "";
