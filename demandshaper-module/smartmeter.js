@@ -7,40 +7,38 @@ view.start = view.end - (3600000*24.0*1);
 
 function load_device() {
 
-    if (device!=undefined && devices[device]!=undefined) {
-        device_loaded = true;
-        console.log("device loaded");
+    device_loaded = true;
+    console.log("device loaded");
 
-        $("#devicename").html(jsUcfirst(device));
-        $(".node-scheduler-title").html("<span class='icon-"+devices[device].type+"'></span>"+device);
-        $(".node-scheduler").attr("node",device);
-        
-        first_load = true;
-        update_status();
-        setInterval(update_status,5000);
-        function update_status(){
-            $.ajax({ url: emoncmspath+"input/get/"+device+apikeystr, dataType: 'json', async: true, success: function(result) {
-                if (result!=null) {
-                    inputs = result;
-                    if (inputs.kW!=undefined) {
-                        $(".value").each(function(){
-                            var name = $(this).attr("name");
-                            var scale = $(this).attr("scale");
-                            if (scale==undefined) scale = 1;
-                            var dp = $(this).attr("dp");
-                            if (dp==undefined) dp = 1;
-                            $(this).html((inputs[name].value*scale).toFixed(dp));
-                        });
-                        
-                        if (first_load) {
-                            first_load = false;
-                            graph_feed_name = "kW";
-                            load_graph();
-                        }
+    $("#devicename").html(jsUcfirst(device_name));
+    $(".node-scheduler-title").html("<span class='icon-"+device_type+"'></span>"+device_name);
+    $(".node-scheduler").attr("node",device_name);
+    
+    first_load = true;
+    update_status();
+    setInterval(update_status,5000);
+    function update_status(){
+        $.ajax({ url: emoncmspath+"input/get/"+device_name+apikeystr, dataType: 'json', async: true, success: function(result) {
+            if (result!=null) {
+                inputs = result;
+                if (inputs.kW!=undefined) {
+                    $(".value").each(function(){
+                        var name = $(this).attr("name");
+                        var scale = $(this).attr("scale");
+                        if (scale==undefined) scale = 1;
+                        var dp = $(this).attr("dp");
+                        if (dp==undefined) dp = 1;
+                        $(this).html((inputs[name].value*scale).toFixed(dp));
+                    });
+                    
+                    if (first_load) {
+                        first_load = false;
+                        graph_feed_name = "kW";
+                        load_graph();
                     }
                 }
-            }});
-        }
+            }
+        }});
     }
     
     $(window).resize(function(){
