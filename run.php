@@ -66,11 +66,8 @@ if (!empty($redis_server['auth']) && !$redis->auth($redis_server['auth'])) {
     $log->error("Can't connect to redis, autentication failed"); die;
 }
 
-if (file_exists("$homedir/demandshaper/scheduler.php")) {
-    require "$homedir/demandshaper/scheduler.php";
-}
-else if (file_exists("$homedir/modules/demandshaper/scheduler.php")) {
-    require "$homedir/modules/demandshaper/scheduler.php";
+if (file_exists("$linked_modules_dir/demandshaper/scheduler.php")) {
+    require "$linked_modules_dir/demandshaper/scheduler.php";
 }
 require "Modules/demandshaper/demandshaper_model.php";
 $demandshaper = new DemandShaper($mysqli,$redis);
@@ -85,7 +82,7 @@ $last_timer = array();
 $last_ctrlmode = array();
 $last_flowtemp = array();
 $update_interval = 60;
-//$last_state_check = 0;
+$last_state_check = 0;
 $schedules = array();
 
 $lasttime = time();
@@ -252,6 +249,14 @@ while(true)
                             if ($device_type=="smartplug" || $device_type=="hpmon") {
                                 $mqtt_client->publish("emon/$device/in/ctrlmode",$ctrlmode_status,0);
                             }
+
+                            if ($device_type=="openevse") {
+                                if ($ctrlmode=="on" || $ctrlmode=="off") {
+                                    $mqtt_client->publish("emon/$device/rapi/in/\$ST","00 00 00 00",0);
+                                }
+                                if ($ctrlmode=="on") $mqtt_client->publish("emon/$device/rapi/in/\$FE","",0);
+                                if ($ctrlmode=="off") $mqtt_client->publish("emon/$device/rapi/in/\$FS","",0);
+                            }
                         }
                         $last_ctrlmode[$device] = $ctrlmode;
                         
@@ -302,15 +307,15 @@ while(true)
         $lasttime = $now;
     } // 10s update
     
-    // if ($connected && (time()-$last_state_check)>300) {
-    //     $last_state_check = time();
-    //     foreach ($schedules as $schedule) {
-    //         $device = false;
-    //         if (isset($schedule->device)) $device = $schedule->device;
-    //         $log->info("emon/$device/in/state");
-    //         if ($device) $mqtt_client->publish("emon/$device/in/state","",0);
-    //     }
-    // }
+    if ($connected && (time()-$last_state_check)>300) {
+        $last_state_check = time();
+        foreach ($schedules as $schedule) {
+            $device = false;
+            if (isset($schedule->device)) $device = $schedule->device;
+            $log->info("emon/$device/in/state");
+            if ($device) $mqtt_client->publish("emon/$device/in/state","",0);
+        }
+    }
     
     // MQTT Connect or Reconnect
     if (!$connected && (time()-$last_retry)>5.0) {
@@ -341,7 +346,7 @@ function disconnect() {
 // -------------------------------------------------------------------------
 function message($message) 
 {
-    global $demandshaper, $userid, $schedules;
+    global $demandshaper, $userid, $schedules, $log;
     
     $topic_parts = explode("/",$message->topic);
     if (isset($topic_parts[1])) {
@@ -374,6 +379,8 @@ function message($message)
                     $schedules->$device->timer_start2 = time_conv($timer[2]);
                     $schedules->$device->timer_stop2 = time_conv($timer[3]);
                 }
+                
+                $schedules->$device->last_update_from_device = time();
                 $demandshaper->set($userid,$schedules);
             }
             

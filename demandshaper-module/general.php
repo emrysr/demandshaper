@@ -120,9 +120,8 @@
           </div>
           <!---------------------------------------------------------------------------------------------------------------------------->
         
-          <div style="height:50px"></div>
           
-          <div id="schedule-output" style="font-weight:normal"></div>
+          <div id="schedule-output" style="font-weight:normal; padding-top:20px; padding-bottom:20px"></div>
           <div id="timeleft" style="font-weight:normal; font-size:14px"></div>
           <div id="placeholder_bound" style="width:100%; height:300px">
             <div id="placeholder" style="height:300px"></div>
@@ -152,9 +151,10 @@
               </tr>
               </table>
           </div>
-          
+                    
       </div> <!-- schedule-inner2 -->
     </div> <!-- schedule-inner -->
+    <div id="ip_address"></div>
   </div> <!-- node-scheduler -->
 </div> <!-- table -->
 </div>
@@ -173,4 +173,4 @@
     </div>
 </div>
 
-<script type="text/javascript" src="<?php echo $path; ?>Modules/demandshaper/general.js?v=5"></script>
+<script type="text/javascript" src="<?php echo $path; ?>Modules/demandshaper/general.js?v=8"></script>
