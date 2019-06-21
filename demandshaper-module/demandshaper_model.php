@@ -35,7 +35,7 @@ class DemandShaper
         }
         foreach ($devices_all as $d) {
             $name = $d["nodeid"];
-            if (in_array($d['type'],array("emonth")))
+            if (in_array($d['type'],array("emonth","edmi-am")))
                 $devices[$name] = array("id"=>$d["id"]*1,"type"=>$d["type"]);
         }
         return $devices;
