@@ -24,12 +24,13 @@ if ($remoteaccess) $emoncmspath .= "remoteaccess/";
 ?>
 
 <script>
-var path = "<?php echo $path; ?>";
 var emoncmspath = "<?php echo $emoncmspath; ?>";
 var device_name = "<?php echo $device; ?>";
 var devices = {};
 
 var apikeystr = "&apikey=<?php echo $apikey; ?>";
+
+var forecast_list = <?php echo json_encode($forecast_list); ?>;
 
 </script>
 <style>
@@ -182,6 +183,7 @@ var apikeystr = "&apikey=<?php echo $apikey; ?>";
                   device_id = devices[device_name].id;
                   device_type = devices[device_name].type;
                   
+                  $("#wizard").hide();
                   load_device(device_id, device_name, device_type);
               } else {
                   show_device_finder();
@@ -252,5 +254,4 @@ $(".wizard-option-l2").click(function(){
    $(".wizard-option-l3[name="+name+"]").slideToggle();
    $(".wizard-option-l3[name!="+name+"]").slideUp();
 });
-
 </script>

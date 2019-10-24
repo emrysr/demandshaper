@@ -17,7 +17,7 @@ defined('EMONCMS_EXEC') or die('Restricted access');
 
 function demandshaper_controller()
 {
-    global $mysqli, $redis, $session, $route, $mqtt_server, $linked_modules_dir, $user;
+    global $mysqli, $redis, $session, $route, $settings, $linked_modules_dir, $user;
     $result = false;
 
     $route->format = "json";
@@ -30,6 +30,8 @@ function demandshaper_controller()
     
     require_once "Modules/device/device_model.php";
     $device = new Device($mysqli,$redis);
+    
+    $forecast_list = $demandshaper->get_forecast_list();
         
     switch ($route->action)
     {  
@@ -37,7 +39,7 @@ function demandshaper_controller()
             $route->format = "html";
             if ($session["write"]) {
                 $apikey = $user->get_apikey_write($session["userid"]);
-                return view("Modules/demandshaper/view.php", array("remoteaccess"=>$remoteaccess, "apikey"=>$apikey));
+                return view("Modules/demandshaper/view.php", array("remoteaccess"=>$remoteaccess, "apikey"=>$apikey, "forecast_list"=>$forecast_list));
             } else {
                 // redirect to login
                 return "";
@@ -197,7 +199,7 @@ function demandshaper_controller()
                     $state = new stdClass;
                     
                     include "Modules/demandshaper/MQTTRequest.php";
-                    $mqtt_request = new MQTTRequest($mqtt_server);
+                    $mqtt_request = new MQTTRequest($settings['mqtt']);
                     
                     if ($schedules->$device->settings->device_type=="hpmon" || $schedules->$device->settings->device_type=="smartplug") {
                         
@@ -227,8 +229,8 @@ function demandshaper_controller()
                         if ($result = $mqtt_request->request("emon/$device/rapi/in/\$GD","","emon/$device/rapi/out")) {
                             $ret = explode(" ",substr($result,4,11));
                             if (count($ret)==4) {
-                                $state->timer_start1 = $ret[0]+($ret[1]/60);
-                                $state->timer_stop1 = $ret[2]+($ret[3]/60);
+                                $state->timer_start1 = ((int)$ret[0])+((int)$ret[1]/60);
+                                $state->timer_stop1 = ((int)$ret[2])+((int)$ret[3]/60);
                                 $state->timer_start2 = 0;
                                 $state->timer_stop2 = 0;
                             } else {

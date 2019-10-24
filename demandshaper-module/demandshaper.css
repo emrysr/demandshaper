@@ -276,31 +276,7 @@ body {padding:0}
     font-size:12px;
 }
 
-.value-block {
-    width:120px;
-    float:left; 
-    cursor:pointer;
-}
-
-.value-block:hover {
-    /*background-color:rgba(234,81,14,0.1);*/
-    border-bottom:2px solid #ea510e;
-    
-}
-
-.value-block-inner {
-    padding:5px;
-}
-
-.graph-time {
-    color:#000 !important;
-}
-
-.graph-nav {
-    color:#000 !important;
-}
-
-#device-state-message {
+.device-state-message {
     font-weight:normal;
 }
 
@@ -378,4 +354,28 @@ body {padding:0}
     cursor:pointer;
     text-align:left;
     font-size:16px;
+}
+
+.value-block {
+    width:120px;
+    float:left; 
+    cursor:pointer;
+}
+
+.value-block:hover {
+    /*background-color:rgba(234,81,14,0.1);*/
+    border-bottom:2px solid #ea510e;
+    
+}
+
+.value-block-inner {
+    padding:5px;
+}
+
+.graph-time {
+    color:#000 !important;
+}
+
+.graph-nav {
+    color:#000 !important;
 }

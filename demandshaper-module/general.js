@@ -6,7 +6,7 @@ function load_device(device_id, device_name, device_type)
     $("#scheduler-outer").show();
 
     $("#devicename").html(jsUcfirst(device_name));
-    $(".node-scheduler-title").html("<span class='icon-"+device_type+"'></span>"+device_name+" <span id='device-state-message'></span>");
+    $(".node-scheduler-title").html("<span class='icon-"+device_type+"'></span>"+device_name+" <span class='device-state-message'></span>");
     $(".node-scheduler").attr("node",device_name);
 
     if (device_type=="openevse") {
@@ -247,7 +247,11 @@ function load_device(device_id, device_name, device_type)
         
         $(".scheduler-checkbox[name='interruptible']").attr("state",schedule.settings.interruptible);
         
-        $(".scheduler-select[name='signal']").val(schedule.settings.signal);
+        draw_forecast_category_select(); 
+        draw_forecast_select(forecast_list[schedule.settings.signal].category);
+        
+        $(".forecast").val(schedule.settings.signal);
+        $(".forecast-category").val(forecast_list[schedule.settings.signal].category);
                     
         if (schedule.settings.device_type=="openevse") {   
             $(".input[name=batterycapacity").val(schedule.settings.batterycapacity);
@@ -424,12 +428,12 @@ function load_device(device_id, device_name, device_type)
                 } else {
                     out += ", "+Math.round(100.0*(1.0-(mean/peak)))+"% reduction vs peak";
                 }
-            } else if (schedule.settings.signal=="octopus" || schedule.settings.signal=="economy7") {
+            } else if (schedule.settings.signal.indexOf("octopus")==0 || schedule.settings.signal=="economy7") {
 
                 if (device_type=="openevse") {
                     var p_per_mile = (mean / 4.0);
                     var prc = 100-(100*(p_per_mile / 10.0));
-                    out = "Cost: "+(p_per_mile).toFixed(1)+"p/mile"
+                    out = "Cost: "+(p_per_mile).toFixed(1)+"p/mile, "+Math.round(100.0*(1.0-(mean/peak)))+"% reduction vs peak"
                     
                 } else if (device_type=="hpmon") {
                     out = ", "+Math.round(mean/3.8)+" p/kWh Heat @ COP 3.8";
@@ -503,9 +507,9 @@ function load_device(device_id, device_name, device_type)
                     
                     if (state_matched) {
                         console.log("State matched");
-                        $("#device-state-message").html("Saved");
+                        $(".device-state-message").html("Saved");
                         setTimeout(function(){
-                            $("#device-state-message").html("");
+                            $(".device-state-message").html("");
                         },2000);
                         $(".node-scheduler-title").css("background-color","#ea510e");
                         $(".node-scheduler").css("background-color","#ea510e");
@@ -513,7 +517,7 @@ function load_device(device_id, device_name, device_type)
                         console.log("Settings Mismatch");
                         $(".node-scheduler-title").css("background-color","#bbb");
                         $(".node-scheduler").css("background-color","#bbb");
-                        $("#device-state-message").html("Settings Mismatch");
+                        $(".device-state-message").html("Settings Mismatch");
                         clearTimeout(get_device_state_timeout)
                         get_device_state_timeout = setTimeout(function(){ get_device_state(); },5000);
                     }
@@ -667,15 +671,15 @@ function load_device(device_id, device_name, device_type)
         calc_schedule();
     });
 
-    $(".scheduler-select").change(function(){
-        var name = $(this).attr('name');
-        schedule.settings[name] = $(this).val();
-        
-        if (name=="signal") {
-            get_forecast(schedule.settings.signal,calc_schedule);
-        } else {
-            calc_schedule();
-        }
+    $(".forecast-category").change(function(){
+        let selected_forecast_category = $(this).val();
+        draw_forecast_select(selected_forecast_category);
+    });
+    
+    $(".forecast, .forecast-category").change(function(){
+        // console.log($(".forecast-category").val()+" "+$(".forecast").val());
+        schedule.settings.signal = $(".forecast").val();
+        get_forecast(schedule.settings.signal,calc_schedule);        
     });
 
     $(".delete-device").click(function(){
@@ -738,4 +742,32 @@ function load_device(device_id, device_name, device_type)
             }});
         }});
     });
+    
+    // ----------------------------------------------------------------------------------------------------
+    // Forecast selection
+    // ----------------------------------------------------------------------------------------------------
+    function draw_forecast_category_select() {
+        let forecast_categories = [];
+        for (let z in forecast_list) {
+            if (forecast_categories.indexOf(forecast_list[z].category)==-1) {
+                forecast_categories.push(forecast_list[z].category)
+            }
+        }
+
+        let out = "";
+        for (let z in forecast_categories) {
+            out += "<option>"+forecast_categories[z]+"</option>";
+        }
+        $(".forecast-category").html(out);
+    }
+
+    function draw_forecast_select(selected_forecast_category) {
+        let out = "";
+        for (let z in forecast_list) {
+            if (selected_forecast_category==forecast_list[z].category) {
+                out += "<option value='"+z+"'>"+forecast_list[z].name+"</option>";
+            }
+        }
+        $(".forecast").html(out);
+    }
 }
