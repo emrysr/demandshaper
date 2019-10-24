@@ -211,10 +211,10 @@ function demandshaper_controller()
                             $date = new DateTime("now", $dateTimeZone);
                             $timeOffset = $dateTimeZone->getOffset($date) / 3600;
                             
-                            $state->timer_start1 = conv_time($timer_parts[0]) + $timeOffset;
-                            $state->timer_stop1 = conv_time($timer_parts[1]) + $timeOffset;
-                            $state->timer_start2 = conv_time($timer_parts[2]) + $timeOffset;
-                            $state->timer_stop2 = conv_time($timer_parts[3]) + $timeOffset;
+                            $state->timer_start1 = conv_time($timer_parts[0],$timeOffset);
+                            $state->timer_stop1 = conv_time($timer_parts[1],$timeOffset);
+                            $state->timer_start2 = conv_time($timer_parts[2],$timeOffset);
+                            $state->timer_stop2 = conv_time($timer_parts[3],$timeOffset);
                             $state->voltage_output = $result->vout*1;
                             return $state;
                         } else {
@@ -336,10 +336,13 @@ function demandshaper_controller()
     return array('content'=>'#UNDEFINED#');
 }
 
-function conv_time($time) {
+function conv_time($time,$timeOffset) {
     $h = floor($time*0.01);
     $m = (($time*0.01) - $h)/0.6;
-    return $h+$m;
+    $t = $h+$m+$timeOffset;
+    if ($t<0.0) $t += 24.0;
+    if ($t>=24.0) $t -= 24.0;
+    return $t;
 }
 
 function schedule_log($message){
