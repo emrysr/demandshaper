@@ -126,7 +126,7 @@ function load_graph() {
         
         var intervalms = interval * 1000;
         view.start = Math.floor(view.start/intervalms)*intervalms;
-        view.end = Math.floor(view.end/intervalms)*intervalms;
+        view.end = Math.ceil(view.end/intervalms)*intervalms;
         var npoints = (view.end - view.start)/intervalms;
         
         if (npoints<8000) {
@@ -160,8 +160,8 @@ function load_graph() {
 }
 
 function draw_graph() {
-    options.xaxis.min: view.start,
-    options.xaxis.max: view.end
+    options.xaxis.min = view.start;
+    options.xaxis.max = view.end;
     
     var width = $("#placeholder_bound").width();
     if (width>0) {
