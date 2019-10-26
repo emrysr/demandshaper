@@ -2,8 +2,33 @@ var feeds = {};
 var graph_feed = false;
 var graph_feed_name = false;
 
+var viewmode = "standard";
+
 view.end = +new Date;
 view.start = view.end - (3600000*24.0*1);
+
+var options = {
+    xaxis: { 
+        mode: "time", 
+        timezone: "browser", 
+        font: {size:12, color:"#666"}, 
+        // labelHeight:-5
+        reserveSpace:false
+    },
+    yaxis: { 
+        font: {size:12, color:"#666"}, 
+        // labelWidth:-5
+        reserveSpace:false
+    },
+    selection: { mode: "x" },
+    grid: {
+        show:true, 
+        color:"#aaa",
+        borderWidth:0,
+        hoverable: true, 
+        clickable: true
+    }
+}
 
 function load_device() {
 
@@ -57,68 +82,86 @@ $(".value-block").click(function(){
 function load_graph() {
    
     graph_feed = feeds[graph_feed_name].id;
-
-    interval = Math.round(((view.end - view.start)/800)/1000);
     
-    data = []
-    $.ajax({                                      
-        url: emoncmspath+"feed/data.json?id="+graph_feed+"&start="+view.start+"&end="+view.end+"&interval="+interval+apikeystr,
-        dataType: 'json',
-        async: true,                      
-        success: function(result) {
-            data = result
-            draw_graph();
-            
-            // -----------------------------------------
-            // min/max/mean
-            // -----------------------------------------
-            var V_min = 100;
-            var V_max = -100;
-            var V_sum = 0;
-            var n = 0;
-            
-            for (var z in data) {
-                var V = data[z][1];
-                if (V<V_min) V_min = V;
-                if (V>V_max) V_max = V;
-                V_sum += V;
-                n++;
+    if (viewmode=="standard") {
+        interval = Math.round(((view.end - view.start)/800)/1000);
+        data = []
+        $.ajax({                                      
+            url: emoncmspath+"feed/data.json?id="+graph_feed+"&start="+view.start+"&end="+view.end+"&interval="+interval+apikeystr,
+            dataType: 'json',
+            async: true,                      
+            success: function(result) {
+                data = result
+                if (options.bars!=undefined) delete options.bars;
+                draw_graph();
+                
+                // -----------------------------------------
+                // min/max/mean
+                // -----------------------------------------
+                var V_min = 100;
+                var V_max = -100;
+                var V_sum = 0;
+                var n = 0;
+                
+                for (var z in data) {
+                    var V = data[z][1];
+                    if (V<V_min) V_min = V;
+                    if (V>V_max) V_max = V;
+                    V_sum += V;
+                    n++;
+                }
+                V_mean = V_sum / n;
+                
+                $("#smartmeter_min").html((V_min).toFixed(1));
+                $("#smartmeter_max").html((V_max).toFixed(1));
+                $("#smartmeter_mean").html((V_mean).toFixed(1));
             }
-            V_mean = V_sum / n;
-            
-            $("#smartmeter_min").html((V_min).toFixed(1));
-            $("#smartmeter_max").html((V_max).toFixed(1));
-            $("#smartmeter_mean").html((V_mean).toFixed(1));
+        });
+    }
+    
+    if (viewmode=="halfhourly" || viewmode=="daily") {
+    
+        if (viewmode=="halfhourly") interval = 1800;
+        if (viewmode=="daily") interval = 24*3600;
+        
+        var intervalms = interval * 1000;
+        view.start = Math.floor(view.start/intervalms)*intervalms;
+        view.end = Math.floor(view.end/intervalms)*intervalms;
+        var npoints = (view.end - view.start)/intervalms;
+        
+        if (npoints<8000) {
+            data = []
+            $.ajax({                                      
+                url: emoncmspath+"feed/data.json?id="+graph_feed+"&start="+view.start+"&end="+view.end+"&interval="+interval+apikeystr,
+                dataType: 'json',
+                async: true,                      
+                success: function(result) {
+                
+                    data = []
+                    for (var z=1; z<result.length; z++) {
+                        let delta = null;
+                        if (result[z][1]!=null && result[z][1]!=null) {
+                            delta = result[z][1] - result[z-1][1];
+                        }
+                        data.push([result[z][0],delta])
+                    }
+                    
+                    options.bars = { show: true, align: "center", barWidth: 0.75*interval*1000, fill: 1.0, lineWidth:0}
+                    
+                    draw_graph();
+                    
+                    $("#smartmeter_min").html("");
+                    $("#smartmeter_max").html("");
+                    $("#smartmeter_mean").html("");
+                }
+            });
         }
-    });
+    }
 }
 
 function draw_graph() {
-    var flot_font_size = 12;
-    var options = {
-        xaxis: { 
-            mode: "time", 
-            timezone: "browser", 
-            font: {size:flot_font_size, color:"#666"}, 
-            // labelHeight:-5
-            reserveSpace:false,
-            min: view.start,
-            max: view.end
-        },
-        yaxis: { 
-            font: {size:flot_font_size, color:"#666"}, 
-            // labelWidth:-5
-            reserveSpace:false
-        },
-        selection: { mode: "x" },
-        grid: {
-            show:true, 
-            color:"#aaa",
-            borderWidth:0,
-            hoverable: true, 
-            clickable: true
-        }
-    }
+    options.xaxis.min: view.start,
+    options.xaxis.max: view.end
     
     var width = $("#placeholder_bound").width();
     if (width>0) {
@@ -144,14 +187,17 @@ $(".viewmode").click(function(){
     var mode = $(this).attr("mode");
     if (mode=="power") {
         graph_feed_name = "W";
+        viewmode = "standard";
         load_graph();
     }
     if (mode=="halfhourly") {
         graph_feed_name = "imkWh";
+        viewmode = "halfhourly";
         load_graph();
     }  
     if (mode=="daily") {
         graph_feed_name = "imkWh";
+        viewmode = "daily";
         load_graph();
     }    
 });
