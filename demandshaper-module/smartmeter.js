@@ -1,4 +1,4 @@
-var inputs = {};
+var feeds = {};
 var graph_feed = false;
 var graph_feed_name = false;
 
@@ -18,22 +18,25 @@ function load_device() {
     update_status();
     setInterval(update_status,5000);
     function update_status(){
-        $.ajax({ url: emoncmspath+"input/get/"+device_name+apikeystr, dataType: 'json', async: true, success: function(result) {
+        $.ajax({ url: emoncmspath+"feed/list.json?apikey="+apikeystr, dataType: 'json', async: true, success: function(result) {
             if (result!=null) {
-                inputs = result;
-                if (inputs.kW!=undefined) {
+                for (var z in result) {
+                    feeds[result[z].name] = result[z];
+                }
+                
+                if (feeds.W!=undefined) {
                     $(".value").each(function(){
                         var name = $(this).attr("name");
                         var scale = $(this).attr("scale");
                         if (scale==undefined) scale = 1;
                         var dp = $(this).attr("dp");
                         if (dp==undefined) dp = 1;
-                        $(this).html((inputs[name].value*scale).toFixed(dp));
+                        $(this).html((feeds[name].value*scale).toFixed(dp));
                     });
                     
                     if (first_load) {
                         first_load = false;
-                        graph_feed_name = "kW";
+                        graph_feed_name = "W";
                         load_graph();
                     }
                 }
@@ -52,10 +55,8 @@ $(".value-block").click(function(){
 });
 
 function load_graph() {
-
-    var processList = (inputs[graph_feed_name].processList).split(",");
-    var processListItem = (processList[0]).split(":");
-    if (processListItem[0]=="1") graph_feed = 1*processListItem[1];
+   
+    graph_feed = feeds[graph_feed_name].id;
 
     interval = Math.round(((view.end - view.start)/800)/1000);
     
