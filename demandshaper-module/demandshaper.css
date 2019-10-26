@@ -381,7 +381,8 @@ body {padding:0}
 
 .viewmode {
     width:25%; 
-    float:left
+    float:left;
+    cursor:pointer;
 }
 
 .viewmode-inner {

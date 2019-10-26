@@ -140,4 +140,20 @@ $("#placeholder").bind("plotselected", function (event, ranges)
     load_graph(graph_feed_name);
 });
 
+$(".viewmode").click(function(){
+    var mode = $(this).attr("mode");
+    if (mode=="power") {
+        graph_feed_name = "W";
+        load_graph();
+    }
+    if (mode=="halfhourly") {
+        graph_feed_name = "imkWh";
+        load_graph();
+    }  
+    if (mode=="daily") {
+        graph_feed_name = "imkWh";
+        load_graph();
+    }    
+});
+
 function jsUcfirst(string) {return string.charAt(0).toUpperCase() + string.slice(1);}

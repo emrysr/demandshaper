@@ -86,9 +86,9 @@
         <br>
         <div style="text-align:center">
             <div class="viewmode"><div class="viewmode-inner">View</div></div>
-            <div class="viewmode"><div class="viewmode-inner">Power</div></div>
-            <div class="viewmode"><div class="viewmode-inner">Half-hourly</div></div>
-            <div class="viewmode"><div class="viewmode-inner">Daily</div></div>
+            <div class="viewmode" mode="power"><div class="viewmode-inner">Power</div></div>
+            <div class="viewmode" mode="halfhourly"><div class="viewmode-inner">Half-hourly</div></div>
+            <div class="viewmode" mode="daily"><div class="viewmode-inner">Daily</div></div>
             <div style="clear:both"></div>
             <br>
         </div>
