@@ -10,7 +10,7 @@
             <div class="value-block" name="W">
                 <div class="value-block-inner">
                     <p>Power</p>
-                    <div><span class="value" name="W" dp=9 style="font-size:22px"></span>W</div>
+                    <div><span class="value" name="W" dp=0 style="font-size:22px"></span>W</div>
                 </div>
             </div>
             <div class="value-block" name="Hz">
