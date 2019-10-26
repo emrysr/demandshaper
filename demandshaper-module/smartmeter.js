@@ -130,10 +130,13 @@ function load_graph() {
         view.end = Math.ceil(view.end/intervalms)*intervalms;
         var npoints = (view.end - view.start)/intervalms;
         
+        var interval_or_mode = "&interval="+interval;
+        if (viewmode=="daily") interval_or_mode = "&mode=daily";
+             
         if (npoints<8000) {
             data = []
             $.ajax({                                      
-                url: emoncmspath+"feed/data.json?id="+graph_feed+"&start="+view.start+"&end="+view.end+"&interval="+interval+apikeystr,
+                url: emoncmspath+"feed/data.json?id="+graph_feed+"&start="+view.start+"&end="+view.end+interval_or_mode+apikeystr,
                 dataType: 'json',
                 async: true,                      
                 success: function(result) {
@@ -193,7 +196,7 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             $("#tooltip").remove();
             var itemTime = item.datapoint[0];
             var itemValue = item.datapoint[1];
-            tooltip(item.pageX, item.pageY, itemValue, "#fff");
+            tooltip(item.pageX, item.pageY, itemValue.toFixed(3), "#fff");
         }
     } else $("#tooltip").remove();
 });
