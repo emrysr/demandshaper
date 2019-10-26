@@ -113,4 +113,4 @@
 </div>
 
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/vis/visualisations/common/vis.helper.js"></script>
-<script type="text/javascript" src="<?php echo $path; ?>Modules/demandshaper/smartmeter.js?v=5"></script>
+<script type="text/javascript" src="<?php echo $path; ?>Modules/demandshaper/smartmeter.js?v=6"></script>
