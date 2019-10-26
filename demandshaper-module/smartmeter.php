@@ -72,18 +72,26 @@
         
         <br>
         <div style="text-align:center">
-            <div style="width:20%; float:left">
+            <div style="width:33.3%; float:left">
                 <p>Min: <span id="smartmeter_min"></span></p>
             </div>
-            <div style="width:20%; float:left">
+            <div style="width:33.3%; float:left">
                 <p>Max: <span id="smartmeter_max"></span></p>
             </div>
-            <div style="width:20%; float:left">
+            <div style="width:33.3%; float:left">
                 <p>Mean: <span id="smartmeter_mean"></span></p>
             </div>
             <div style="clear:both"></div>
         </div>
-          
+        <br>
+        <div style="text-align:center">
+            <div class="viewmode"><div class="viewmode-inner">View</div></div>
+            <div class="viewmode"><div class="viewmode-inner">Power</div></div>
+            <div class="viewmode"><div class="viewmode-inner">Half-hourly</div></div>
+            <div class="viewmode"><div class="viewmode-inner">Daily</div></div>
+            <div style="clear:both"></div>
+            <br>
+        </div>
       </div> <!-- schedule-inner2 -->
     </div> <!-- schedule-inner -->
   </div> <!-- node-scheduler -->

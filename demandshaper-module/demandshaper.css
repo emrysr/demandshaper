@@ -379,3 +379,12 @@ body {padding:0}
 .graph-nav {
     color:#000 !important;
 }
+
+.viewmode {
+    width:25%; 
+    float:left
+}
+
+.viewmode-inner {
+    padding:10px;
+}
