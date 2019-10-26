@@ -391,7 +391,7 @@ body {padding:0}
     border-right: 0;
 }
 
-.viewmode-inner:last-child {
+.viewmode:last-child {
     border-right: 1px solid #333;
 }
 

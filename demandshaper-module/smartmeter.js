@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------------------------------------
+// Smartmeter demandshaper UI
+// ------------------------------------------------------------------------------------------------
+// Init variables
+// ------------------------------------------------------------------------------------------------
 var feeds = {};
 var graph_feed = false;
 var graph_feed_name = false;
@@ -40,6 +45,9 @@ var options = {
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Load device
+// ------------------------------------------------------------------------------------------------
 function load_device() {
 
     device_loaded = true;
@@ -84,16 +92,14 @@ function load_device() {
     });
 }
 
-$(".value-block").click(function(){
-    graph_feed_name = $(this).attr("name");
-    viewmode = "standard";
-    load_graph();
-});
-
+// ------------------------------------------------------------------------------------------------
+// Load graph
+// ------------------------------------------------------------------------------------------------
 function load_graph() {
    
     graph_feed = feeds[graph_feed_name].id;
     
+    // STANDARD LINE GRAPH VIEW
     if (viewmode=="standard") {
         interval = Math.round(((view.end - view.start)/800)/1000);
         data = []
@@ -103,7 +109,11 @@ function load_graph() {
             async: true,                      
             success: function(result) {
                 data = result
+                
+                options.lines = { show: true, fill:false};
+                if (graph_feed_name=="W") options.lines = { show: true, fill:true};
                 if (options.bars!=undefined) delete options.bars;
+                
                 draw_graph();
                 
                 // -----------------------------------------
@@ -129,7 +139,8 @@ function load_graph() {
             }
         });
     }
-    
+
+    // BAR GRAPH VIEW USED FOR HALF-HOURLY AND DAILY VIEW 
     if (viewmode=="halfhourly" || viewmode=="daily") {
     
         if (viewmode=="halfhourly") interval = 1800;
@@ -159,7 +170,7 @@ function load_graph() {
                         }
                         data.push([result[z-1][0],delta])
                     }
-                    
+                    if (options.lines!=undefined) delete options.lines;
                     options.bars = { show: true, align: "center", barWidth: 0.75*interval*1000, fill: 1.0, lineWidth:0}
                     
                     draw_graph();
@@ -173,6 +184,9 @@ function load_graph() {
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Draw graph
+// ------------------------------------------------------------------------------------------------
 function draw_graph() {
     options.xaxis.min = view.start;
     options.xaxis.max = view.end;
@@ -184,12 +198,16 @@ function draw_graph() {
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Events
+// ------------------------------------------------------------------------------------------------
 $("#zoomout").click(function () {view.zoomout(); load_graph();});
 $("#zoomin").click(function () {view.zoomin(); load_graph();});
 $('#right').click(function () {view.panright(); load_graph();});
 $('#left').click(function () {view.panleft(); load_graph();});
 $('.graph-time').click(function () {view.timewindow($(this).attr("time")); load_graph();});
 
+// view selection
 $("#placeholder").bind("plotselected", function (event, ranges)
 {
     panning = true;
@@ -200,6 +218,7 @@ $("#placeholder").bind("plotselected", function (event, ranges)
     load_graph(graph_feed_name);
 });
 
+// Navigate from daily view to power view on bar click
 $('#placeholder').bind("plotclick", function (event, pos, item)
 {
     if (item && !panning && viewmode=="daily") {
@@ -235,6 +254,14 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
     } else $("#tooltip").remove();
 });
 
+// change view between Power, Voltage, Frequency etc
+$(".value-block").click(function(){
+    graph_feed_name = $(this).attr("name");
+    viewmode = "standard";
+    load_graph();
+});
+
+// change view between Power, half hourly and daily import
 $(".viewmode").click(function(){
     var mode = $(this).attr("mode");
     if (mode=="power") {

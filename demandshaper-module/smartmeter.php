@@ -49,7 +49,7 @@
 
 
     
-        <div id="placeholder_bound" style="width:100%; height:400px; position:relative">
+        <div id="placeholder_bound" style="width:100%; height:500px; position:relative">
         
             <div id="placeholder" style="height:400px"></div>
             
