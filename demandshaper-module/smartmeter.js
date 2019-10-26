@@ -80,6 +80,7 @@ function load_device() {
                     if (first_load) {
                         first_load = false;
                         graph_feed_name = "W";
+                        resize_graph();
                         load_graph();
                     }
                 }
@@ -88,6 +89,7 @@ function load_device() {
     }
     
     $(window).resize(function(){
+        resize_graph();
         draw_graph();
     });
 }
@@ -198,6 +200,20 @@ function draw_graph() {
     }
 }
 
+function resize_graph() {
+    var placeholder_bound = $('#placeholder_bound');
+    var placeholder = $('#placeholder');
+
+    var width = placeholder_bound.width();
+    var height = width*0.6;
+    if (height>500) height = 500;
+    if (height>width) height = width;
+    
+    placeholder.width(width);
+    placeholder_bound.height(height);
+    placeholder.height(height);
+}
+
 // ------------------------------------------------------------------------------------------------
 // Events
 // ------------------------------------------------------------------------------------------------
@@ -221,9 +237,10 @@ $("#placeholder").bind("plotselected", function (event, ranges)
 // Navigate from daily view to power view on bar click
 $('#placeholder').bind("plotclick", function (event, pos, item)
 {
-    if (item && !panning && viewmode=="daily") {
+    if (item && !panning && (viewmode=="halfhourly" || viewmode=="daily")) {
         var itemTime = item.datapoint[0];
-        view.end = itemTime+(24*3600*1000);
+        if (viewmode=="halfhourly") view.end = itemTime+(1800*1000);
+        if (viewmode=="daily") view.end = itemTime+(24*3600*1000);
         view.start = itemTime;
         graph_feed_name = "W";
         viewmode = "standard";
