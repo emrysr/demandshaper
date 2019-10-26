@@ -7,6 +7,15 @@ var viewmode = "standard";
 view.end = +new Date;
 view.start = view.end - (3600000*24.0*1);
 
+var feed_dp = {
+  W: 0,
+  Hz: 3,
+  pf: 2,
+  V: 2,
+  imkWh: 3,
+  exkWh: 3
+}
+
 var options = {
     xaxis: { 
         mode: "time", 
@@ -147,7 +156,7 @@ function load_graph() {
                         if (result[z][1]!=null && result[z][1]!=null) {
                             delta = result[z][1] - result[z-1][1];
                         }
-                        data.push([result[z][0],delta])
+                        data.push([result[z-1][0],delta])
                     }
                     
                     options.bars = { show: true, align: "center", barWidth: 0.75*interval*1000, fill: 1.0, lineWidth:0}
@@ -196,7 +205,11 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             $("#tooltip").remove();
             var itemTime = item.datapoint[0];
             var itemValue = item.datapoint[1];
-            tooltip(item.pageX, item.pageY, itemValue.toFixed(3), "#fff");
+            
+            var unit = ""; if (feeds[graph_feed_name]!=undefined) unit = feeds[graph_feed_name].unit;
+            var dp = 1; if (feed_dp[graph_feed_name]!=undefined) dp = feed_dp[graph_feed_name]; 
+            
+            tooltip(item.pageX, item.pageY, itemValue.toFixed(dp)+unit, "#fff");
         }
     } else $("#tooltip").remove();
 });
