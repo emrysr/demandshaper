@@ -94,7 +94,6 @@
             <div class="viewmode" mode="daily"><div class="viewmode-inner" style="border-right: 1px solid #333;">Daily</div></div>
             <div style="clear:both"></div>
         </div>
-        <br>
       </div> <!-- schedule-inner2 -->
     </div> <!-- schedule-inner -->
   </div> <!-- node-scheduler -->
