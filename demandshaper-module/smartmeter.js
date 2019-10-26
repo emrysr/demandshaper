@@ -178,7 +178,16 @@ function load_graph() {
                     }
                 
                     // 2. add last day or half hour
-                    var this_interval = Math.floor((new Date()).getTime()/intervalms)*intervalms
+                    var this_interval = 0;
+                    var d = new Date();
+                    if (viewmode=="halfhourly") {
+                        this_interval = Math.floor(d.getTime()/intervalms)*intervalms
+                    }
+                    else if (viewmode=="daily") {
+                        d.setHours(0,0,0,0);
+                        this_interval = d.getTime();
+                    }
+                    
                     if (feed_kwh.length>0 && this_interval==feed_kwh[feed_kwh.length-1][0]) {
                         feed_kwh.push([this_interval+intervalms,feeds[graph_feed_name].value])
                     }
