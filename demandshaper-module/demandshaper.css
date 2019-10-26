@@ -357,7 +357,6 @@ body {padding:0}
 }
 
 .value-block {
-    width:16.6%;
     float:left; 
     cursor:pointer;
 }
@@ -379,12 +378,6 @@ body {padding:0}
     color:#000 !important;
 }
 
-.viewmode {
-    width:25%; 
-    float:left;
-    cursor:pointer;
-}
-
 .viewmode-inner {
     padding:10px;
     border: 1px solid #333;
@@ -394,3 +387,8 @@ body {padding:0}
 .viewmode:hover {
     background-color:#ccc;
 }
+
+.col3 { width:33.3%; }
+.col4 { width:25%; }
+.col5 { width:20%; }
+.col6 { width:16.6%; }

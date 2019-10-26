@@ -7,37 +7,37 @@
       <div class="scheduler-inner2">
         
         <div style="text-align:center">
-            <div class="value-block" name="W">
+            <div class="value-block col6" name="W">
                 <div class="value-block-inner">
                     <p>Power</p>
                     <div><span class="value" name="W" dp=0 style="font-size:22px"></span>W</div>
                 </div>
             </div>
-            <div class="value-block" name="Hz">
+            <div class="value-block col6" name="Hz">
                 <div class="value-block-inner">
                     <p>Frequency</p>
                     <div><span class="value" name="Hz" dp=3 style="font-size:22px"></span>Hz</div>
                 </div>
             </div>
-            <div class="value-block" name="pf">
+            <div class="value-block col6" name="pf">
                 <div class="value-block-inner">
                     <p>Power Factor</p>
                     <div><span class="value" name="pf" dp=2  style="font-size:22px"></span></div>
                 </div>
             </div>
-            <div class="value-block" name="V">
+            <div class="value-block col6" name="V">
                 <div class="value-block-inner">
                     <p>Voltage</p>
                     <div><span class="value" name="V"  style="font-size:22px"></span>V</div>
                 </div>
             </div>
-            <div class="value-block" name="imkWh">
+            <div class="value-block col6" name="imkWh">
                 <div class="value-block-inner">
                     <p>Import</p>
                     <div><span class="value" name="imkWh" dp=0  style="font-size:22px"></span>kWh</div>
                 </div>
             </div>
-            <div class="value-block" name="exkWh">
+            <div class="value-block col6" name="exkWh">
                 <div class="value-block-inner">
                     <p>Export</p>
                     <div><span class="value" name="exkWh" dp=0  style="font-size:22px"></span>kWh</div>
@@ -47,7 +47,12 @@
             <br>
         </div>
 
-
+        <div style="text-align:center">
+            <div class="viewmode col3" mode="power"><div class="viewmode-inner">Power</div></div>
+            <div class="viewmode col3" mode="halfhourly"><div class="viewmode-inner">Half-hourly</div></div>
+            <div class="viewmode col3" mode="daily"><div class="viewmode-inner" style="border-right: 1px solid #333;">Daily</div></div>
+            <div style="clear:both"></div>
+        </div>
     
         <div id="placeholder_bound" style="width:100%; height:500px; position:relative">
         
@@ -72,26 +77,30 @@
         
         <br>
         <div style="text-align:center">
-            <div style="width:25.0%; float:left">
-                <p>Min: <span id="smartmeter_min"></span></p>
+            <div class="value-block col4">
+                <div class="value-block-inner">
+                    <p>Min</p>
+                    <div><span id="smartmeter_min"></span></div>
+                </div>
             </div>
-            <div style="width:25.0%; float:left">
-                <p>Max: <span id="smartmeter_max"></span></p>
+            <div class="value-block col4">
+                <div class="value-block-inner">
+                    <p>Max</p>
+                    <div><span id="smartmeter_max"></span></div>
+                </div>
             </div>
-            <div style="width:25.0%; float:left">
-                <p>Mean: <span id="smartmeter_mean"></span></p>
+            <div class="value-block col4">
+                <div class="value-block-inner">
+                    <p>Mean</p>
+                    <div><span id="smartmeter_mean"></span></div>
+                </div>
             </div>
-            <div style="width:25.0%; float:left">
-                <p>kWh: <span id="smartmeter_kwh"></span></p>
+            <div class="value-block col4">
+                <div class="value-block-inner">
+                    <p>kWh in Window</p>
+                    <div><span id="smartmeter_kwh"></span></div>
+                </div>
             </div>
-            <div style="clear:both"></div>
-        </div>
-        <br>
-        <div style="text-align:center">
-            <div class="viewmode"><div class="viewmode-inner">View</div></div>
-            <div class="viewmode" mode="power"><div class="viewmode-inner">Power</div></div>
-            <div class="viewmode" mode="halfhourly"><div class="viewmode-inner">Half-hourly</div></div>
-            <div class="viewmode" mode="daily"><div class="viewmode-inner" style="border-right: 1px solid #333;">Daily</div></div>
             <div style="clear:both"></div>
         </div>
       </div> <!-- schedule-inner2 -->
