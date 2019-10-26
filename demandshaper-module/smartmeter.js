@@ -168,19 +168,31 @@ function load_graph() {
                 async: true,                      
                 success: function(result) {
                 
-                    var this_interval = Math.floor((new Date()).getTime()/intervalms)*intervalms
-                    if (result.length>0 && this_interval==result[result.length-1][0]) {
-                        result.push([this_interval+intervalms,feeds[graph_feed_name].value])
+                    var feed_kwh = [];
+                
+                    // 1. remove null
+                    for (var z in result) {
+                        if (result[z][1]!=null) {
+                            feed_kwh.push(result[z]);
+                        }
                     }
                 
-                    data = []
-                    for (var z=1; z<result.length; z++) {
-                        let delta = null;
-                        if (result[z][1]!=null && result[z-1][1]!=null) {
-                            delta = result[z][1] - result[z-1][1];
-                        }
-                        data.push([result[z-1][0],delta])
+                    // 2. add last day or half hour
+                    var this_interval = Math.floor((new Date()).getTime()/intervalms)*intervalms
+                    if (feed_kwh.length>0 && this_interval==feed_kwh[feed_kwh.length-1][0]) {
+                        feed_kwh.push([this_interval+intervalms,feeds[graph_feed_name].value])
                     }
+                
+                    // 3. delta calculation
+                    data = []
+                    for (var z=1; z<feed_kwh.length; z++) {
+                        let delta = null;
+                        if (feed_kwh[z][1]!=null && feed_kwh[z-1][1]!=null) {
+                            delta = feed_kwh[z][1] - feed_kwh[z-1][1];
+                        }
+                        data.push([feed_kwh[z-1][0],delta])
+                    }
+                    
                     if (options.lines!=undefined) delete options.lines;
                     options.bars = { show: true, align: "center", barWidth: 0.75*interval*1000, fill: 1.0, lineWidth:0}
                     
