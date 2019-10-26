@@ -153,7 +153,7 @@ function load_graph() {
                     data = []
                     for (var z=1; z<result.length; z++) {
                         let delta = null;
-                        if (result[z][1]!=null && result[z][1]!=null) {
+                        if (result[z][1]!=null && result[z-1][1]!=null) {
                             delta = result[z][1] - result[z-1][1];
                         }
                         data.push([result[z-1][0],delta])
