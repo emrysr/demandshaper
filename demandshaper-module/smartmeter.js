@@ -1,7 +1,7 @@
 var feeds = {};
 var graph_feed = false;
 var graph_feed_name = false;
-
+var previousPoint = false;
 var viewmode = "standard";
 
 view.end = +new Date;
@@ -76,6 +76,7 @@ function load_device() {
 
 $(".value-block").click(function(){
     graph_feed_name = $(this).attr("name");
+    viewmode = "standard";
     load_graph();
 });
 
@@ -166,7 +167,7 @@ function draw_graph() {
     var width = $("#placeholder_bound").width();
     if (width>0) {
         $("#placeholder").width(width);
-        $.plot($('#placeholder'), [{data:data,color:"#000"}], options);
+        $.plot($('#placeholder'), [{data:data,color:"#ea510e"}], options);
     }
 }
 
@@ -181,6 +182,20 @@ $("#placeholder").bind("plotselected", function (event, ranges)
     view.start = ranges.xaxis.from;
     view.end = ranges.xaxis.to;
     load_graph(graph_feed_name);
+});
+
+$('#placeholder').bind("plothover", function (event, pos, item) {
+    if (item) {
+        var z = item.dataIndex;
+        if (previousPoint != item.datapoint) {
+            previousPoint = item.datapoint;
+            
+            $("#tooltip").remove();
+            var itemTime = item.datapoint[0];
+            var itemValue = item.datapoint[1];
+            tooltip(item.pageX, item.pageY, itemValue, "#fff");
+        }
+    } else $("#tooltip").remove();
 });
 
 $(".viewmode").click(function(){
@@ -198,6 +213,8 @@ $(".viewmode").click(function(){
     if (mode=="daily") {
         graph_feed_name = "imkWh";
         viewmode = "daily";
+        view.end = +new Date;
+        view.start = view.end - (3600000*24.0*30);
         load_graph();
     }    
 });
