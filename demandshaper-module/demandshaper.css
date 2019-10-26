@@ -356,32 +356,20 @@ body {padding:0}
     font-size:16px;
 }
 
+/*---------------------------------------*/
+
 .value-block {
     float:left; 
     cursor:pointer;
 }
 
 .value-block:hover {
-    /*background-color:rgba(234,81,14,0.1);*/
     border-bottom:2px solid #ea510e;    
 }
 
-.value-block-inner {
-    padding:5px;
-}
-
-.graph-time {
-    color:#000 !important;
-}
-
-.graph-nav {
-    color:#000 !important;
-}
-
-.viewmode-inner {
-    padding:10px;
-    border: 1px solid #333;
-    border-right: 0;
+.viewmode {
+    float:left;
+    cursor:pointer;
 }
 
 .viewmode:hover {
@@ -392,3 +380,16 @@ body {padding:0}
 .col4 { width:25%; }
 .col5 { width:20%; }
 .col6 { width:16.6%; }
+
+.fl { float:left; }
+
+.pad5 {padding:5px;}
+.pad10 {padding:10px;}
+
+.graph-time {
+    color:#000 !important;
+}
+
+.graph-nav {
+    color:#000 !important;
+}

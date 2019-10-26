@@ -77,28 +77,28 @@
         
         <br>
         <div style="text-align:center">
-            <div class="value-block col4">
-                <div class="value-block-inner">
+            <div class="col4 fl">
+                <div class="pad5">
                     <p>Min</p>
-                    <div><span id="smartmeter_min"></span></div>
+                    <div><span id="smartmeter_min" style="font-size:22px"></span></div>
                 </div>
             </div>
-            <div class="value-block col4">
-                <div class="value-block-inner">
+            <div class="col4 fl">
+                <div class="pad5">
                     <p>Max</p>
-                    <div><span id="smartmeter_max"></span></div>
+                    <div><span id="smartmeter_max" style="font-size:22px"></span></div>
                 </div>
             </div>
-            <div class="value-block col4">
-                <div class="value-block-inner">
+            <div class="col4 fl">
+                <div class="pad5">
                     <p>Mean</p>
-                    <div><span id="smartmeter_mean"></span></div>
+                    <div><span id="smartmeter_mean" style="font-size:22px"></span></div>
                 </div>
             </div>
-            <div class="value-block col4">
-                <div class="value-block-inner">
-                    <p>kWh in Window</p>
-                    <div><span id="smartmeter_kwh"></span></div>
+            <div class="col4 fl">
+                <div class="pad5">
+                    <p>Energy</p>
+                    <div><span id="smartmeter_kwh" style="font-size:22px"></span>kWh</div>
                 </div>
             </div>
             <div style="clear:both"></div>
