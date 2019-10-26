@@ -7,10 +7,10 @@
       <div class="scheduler-inner2">
         
         <div style="text-align:center">
-            <div class="value-block" name="kW">
+            <div class="value-block" name="W">
                 <div class="value-block-inner">
                     <p>Power</p>
-                    <div><span class="value" name="kW" scale=1000 style="font-size:22px"></span>W</div>
+                    <div><span class="value" name="W" dp=9 style="font-size:22px"></span>W</div>
                 </div>
             </div>
             <div class="value-block" name="Hz">
