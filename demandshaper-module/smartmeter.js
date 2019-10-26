@@ -168,6 +168,11 @@ function load_graph() {
                 async: true,                      
                 success: function(result) {
                 
+                    var this_interval = Math.floor((new Date()).getTime()/intervalms)*intervalms
+                    if (result.length>0 && this_interval==result[result.length-1][0]) {
+                        result.push([this_interval+intervalms,feeds[graph_feed_name].value])
+                    }
+                
                     data = []
                     for (var z=1; z<result.length; z++) {
                         let delta = null;
