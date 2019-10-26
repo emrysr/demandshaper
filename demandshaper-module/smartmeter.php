@@ -47,10 +47,10 @@
             <br>
         </div>
 
-        <div style="text-align:center">
-            <div class="viewmode col3" mode="power"><div class="viewmode-inner">Power</div></div>
-            <div class="viewmode col3" mode="halfhourly"><div class="viewmode-inner">Half-hourly</div></div>
-            <div class="viewmode col3" mode="daily"><div class="viewmode-inner" style="border-right: 1px solid #333;">Daily</div></div>
+        <div style="text-align:center; border: 1px solid #333;">
+            <div class="viewmode col3" mode="power"><div class="pad10" style="border-right: 1px solid #333;">Power</div></div>
+            <div class="viewmode col3" mode="halfhourly"><div class="pad10" style="border-right: 1px solid #333;">Half-hourly</div></div>
+            <div class="viewmode col3" mode="daily"><div class="pad10">Daily</div></div>
             <div style="clear:both"></div>
         </div>
     
