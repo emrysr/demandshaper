@@ -124,6 +124,7 @@ function load_graph() {
                 var V_min = 100;
                 var V_max = -100;
                 var V_sum = 0;
+                var V_kwh = 0;
                 var n = 0;
                 
                 for (var z in data) {
@@ -131,6 +132,8 @@ function load_graph() {
                     if (V<V_min) V_min = V;
                     if (V>V_max) V_max = V;
                     V_sum += V;
+                    
+                    V_kwh += (V * interval) / 3600000.0
                     n++;
                 }
                 V_mean = V_sum / n;
@@ -138,6 +141,7 @@ function load_graph() {
                 $("#smartmeter_min").html((V_min).toFixed(1));
                 $("#smartmeter_max").html((V_max).toFixed(1));
                 $("#smartmeter_mean").html((V_mean).toFixed(1));
+                $("#smartmeter_kwh").html((V_kwh).toFixed(3));
             }
         });
     }
@@ -180,6 +184,7 @@ function load_graph() {
                     $("#smartmeter_min").html("");
                     $("#smartmeter_max").html("");
                     $("#smartmeter_mean").html("");
+                    $("#smartmeter_kwh").html("");
                 }
             });
         }

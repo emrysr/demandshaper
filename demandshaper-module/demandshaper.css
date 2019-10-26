@@ -391,10 +391,6 @@ body {padding:0}
     border-right: 0;
 }
 
-.viewmode:last-child {
-    border-right: 1px solid #333;
-}
-
 .viewmode:hover {
     background-color:#ccc;
 }
