@@ -364,8 +364,7 @@ body {padding:0}
 
 .value-block:hover {
     /*background-color:rgba(234,81,14,0.1);*/
-    border-bottom:2px solid #ea510e;
-    
+    border-bottom:2px solid #ea510e;    
 }
 
 .value-block-inner {
@@ -387,4 +386,10 @@ body {padding:0}
 
 .viewmode-inner {
     padding:10px;
+    border: 1px solid #333;
+    border-right: 0;
+}
+
+.viewmode:hover {
+    background-color:#ccc;
 }
