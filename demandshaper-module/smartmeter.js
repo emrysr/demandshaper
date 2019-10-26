@@ -2,6 +2,7 @@ var feeds = {};
 var graph_feed = false;
 var graph_feed_name = false;
 var previousPoint = false;
+var panning = false;
 var viewmode = "standard";
 
 view.end = +new Date;
@@ -191,9 +192,24 @@ $('.graph-time').click(function () {view.timewindow($(this).attr("time")); load_
 
 $("#placeholder").bind("plotselected", function (event, ranges)
 {
+    panning = true;
+    setTimeout(function() { panning = false; }, 100);
+    
     view.start = ranges.xaxis.from;
     view.end = ranges.xaxis.to;
     load_graph(graph_feed_name);
+});
+
+$('#placeholder').bind("plotclick", function (event, pos, item)
+{
+    if (item && !panning && viewmode=="daily") {
+        var itemTime = item.datapoint[0];
+        view.end = itemTime+(24*3600*1000);
+        view.start = itemTime;
+        graph_feed_name = "W";
+        viewmode = "standard";
+        load_graph();
+    }
 });
 
 $('#placeholder').bind("plothover", function (event, pos, item) {
@@ -206,10 +222,15 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             var itemTime = item.datapoint[0];
             var itemValue = item.datapoint[1];
             
+            var d = new Date(itemTime);
+            var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+            var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            var date = days[d.getDay()]+", "+months[d.getMonth()]+" "+d.getDate()+" "+d.getHours()+":"+d.getMinutes();
+            
             var unit = ""; if (feeds[graph_feed_name]!=undefined) unit = feeds[graph_feed_name].unit;
             var dp = 1; if (feed_dp[graph_feed_name]!=undefined) dp = feed_dp[graph_feed_name]; 
             
-            tooltip(item.pageX, item.pageY, itemValue.toFixed(dp)+unit, "#fff");
+            tooltip(item.pageX, item.pageY, date+"<br>"+itemValue.toFixed(dp)+unit, "#fff");
         }
     } else $("#tooltip").remove();
 });
