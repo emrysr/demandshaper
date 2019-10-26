@@ -63,5 +63,9 @@ $menu['includes']['icons'][] = <<<ICONS
             <!-- <title>smartmeter</title> -->
             <path d="M4.688 24.625l-2-2 10-10 5.313 5.375 9.438-10.625 1.875 1.875-11.313 12.75-5.313-5.375z"></path>
         </symbol>
-
+        <symbol id="icon-edmi-am" viewBox="0 0 32 32">
+            <!-- <title>smartmeter</title> -->
+            <path d="M4.688 24.625l-2-2 10-10 5.313 5.375 9.438-10.625 1.875 1.875-11.313 12.75-5.313-5.375z"></path>
+        </symbol>
+        
 ICONS;
