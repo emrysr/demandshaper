@@ -52,7 +52,7 @@
             <div class="viewmode col3" mode="halfhourly"><div class="pad10" style="border-right: 1px solid #333;">Half-hourly</div></div>
             <div class="viewmode col3" mode="daily"><div class="pad10">Daily</div></div>
             <div style="clear:both"></div>
-        </div>
+        </div><br>
     
         <div id="placeholder_bound" style="width:100%; height:500px; position:relative">
         
@@ -80,19 +80,19 @@
             <div class="col4 fl">
                 <div class="pad5">
                     <p>Min</p>
-                    <div><span id="smartmeter_min" style="font-size:22px"></span></div>
+                    <div><span id="smartmeter_min" style="font-size:22px"></span><span class="feed_unit"></span></div>
                 </div>
             </div>
             <div class="col4 fl">
                 <div class="pad5">
                     <p>Max</p>
-                    <div><span id="smartmeter_max" style="font-size:22px"></span></div>
+                    <div><span id="smartmeter_max" style="font-size:22px"></span><span class="feed_unit"></span></div>
                 </div>
             </div>
             <div class="col4 fl">
                 <div class="pad5">
                     <p>Mean</p>
-                    <div><span id="smartmeter_mean" style="font-size:22px"></span></div>
+                    <div><span id="smartmeter_mean" style="font-size:22px"></span><span class="feed_unit"></span></div>
                 </div>
             </div>
             <div class="col4 fl">

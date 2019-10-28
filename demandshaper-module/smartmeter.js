@@ -18,8 +18,8 @@ var feed_dp = {
   Hz: 3,
   pf: 2,
   V: 2,
-  imkWh: 3,
-  exkWh: 3
+  imkWh: 2,
+  exkWh: 2
 }
 
 var options = {
@@ -117,31 +117,7 @@ function load_graph() {
                 if (options.bars!=undefined) delete options.bars;
                 
                 draw_graph();
-                
-                // -----------------------------------------
-                // min/max/mean
-                // -----------------------------------------
-                var V_min = 100;
-                var V_max = -100;
-                var V_sum = 0;
-                var V_kwh = 0;
-                var n = 0;
-                
-                for (var z in data) {
-                    var V = data[z][1];
-                    if (V<V_min) V_min = V;
-                    if (V>V_max) V_max = V;
-                    V_sum += V;
-                    
-                    V_kwh += (V * interval) / 3600000.0
-                    n++;
-                }
-                V_mean = V_sum / n;
-                
-                $("#smartmeter_min").html((V_min).toFixed(1));
-                $("#smartmeter_max").html((V_max).toFixed(1));
-                $("#smartmeter_mean").html((V_mean).toFixed(1));
-                $("#smartmeter_kwh").html((V_kwh).toFixed(3));
+                draw_stats();
             }
         });
     }
@@ -206,11 +182,7 @@ function load_graph() {
                     options.bars = { show: true, align: "center", barWidth: 0.75*interval*1000, fill: 1.0, lineWidth:0}
                     
                     draw_graph();
-                    
-                    $("#smartmeter_min").html("");
-                    $("#smartmeter_max").html("");
-                    $("#smartmeter_mean").html("");
-                    $("#smartmeter_kwh").html("");
+                    draw_stats();
                 }
             });
         }
@@ -243,6 +215,46 @@ function resize_graph() {
     placeholder.width(width);
     placeholder_bound.height(height);
     placeholder.height(height);
+}
+
+function draw_stats() {
+    // -----------------------------------------
+    // min/max/mean
+    // -----------------------------------------
+    var V_min = 1000000;
+    var V_max = -1000000;
+    var V_sum = 0;
+    var V_kwh = 0;
+    var n = 0;
+
+    for (var z in data) {
+        var V = data[z][1];
+        if (V<V_min) V_min = V;
+        if (V>V_max) V_max = V;
+        V_sum += V;
+        V_kwh += (V * interval) / 3600000.0
+        n++;
+    }
+    V_mean = V_sum / n;
+    
+    if (graph_feed_name=="imkWh" || graph_feed_name=="exkWh") {
+        if (viewmode=="halfhourly" || viewmode=="daily") {
+            V_kwh = V_sum;
+        } else {
+            V_kwh = V_max - V_min;
+        }
+    }
+
+    var unit = ""; if (feeds[graph_feed_name]!=undefined) unit = feeds[graph_feed_name].unit;
+    var dp = 1; if (feed_dp[graph_feed_name]!=undefined) dp = feed_dp[graph_feed_name]; 
+
+    $(".feed_unit").html(unit);
+    $("#smartmeter_min").html((V_min).toFixed(dp));
+    $("#smartmeter_max").html((V_max).toFixed(dp));
+    $("#smartmeter_mean").html((V_mean).toFixed(dp));
+    $("#smartmeter_kwh").html((V_kwh).toFixed(3));
+    
+    if ((["Hz","pf","V"]).indexOf(graph_feed_name)!=-1) $("#smartmeter_kwh").html("n/a ");
 }
 
 // ------------------------------------------------------------------------------------------------
