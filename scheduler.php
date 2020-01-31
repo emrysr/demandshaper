@@ -161,7 +161,7 @@ function get_forecast($redis,$signal,$timezone) {
             $EL_signal = $result->DATA[0];
             array_shift($EL_signal);
             $len = count($EL_signal);
-
+            
             //------------------------
             // Normalise into 0.0 to 1.0
             $min = 1000; $max = -1000;
@@ -173,7 +173,7 @@ function get_forecast($redis,$signal,$timezone) {
             
             $tmp = array();
             $max = $max += -1*$min;
-            for ($i=0; $i<$len; $i++) $tmp[$i*0.5] = (($EL_signal[$i] + -1*$min) / $max);
+            for ($i=0; $i<$len; $i++) $tmp["".($i*0.5)] = (($EL_signal[$i] + -1*$min) / $max);
             $EL_signal = $tmp;
             
             $value = 0.5;
@@ -185,7 +185,7 @@ function get_forecast($redis,$signal,$timezone) {
                 $m = 1*$date->format('i')/60;
                 $hour = $h + $m;
                 
-                if (isset($EL_signal[$hour])) $value = $EL_signal[$hour];
+                if (isset($EL_signal[$hour])) $value = number_format($EL_signal[$hour],3)*1;
                 
                 $profile[] = array($timestamp*1000,$value,$hour);
                 $timestamp += $resolution; 
