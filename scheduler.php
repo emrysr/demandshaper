@@ -161,7 +161,7 @@ function get_forecast($redis,$signal,$timezone) {
             $EL_signal = $result->DATA[0];
             array_shift($EL_signal);
             $len = count($EL_signal);
-            
+
             //------------------------
             // Normalise into 0.0 to 1.0
             $min = 1000; $max = -1000;
