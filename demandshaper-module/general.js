@@ -39,6 +39,8 @@ function load_device(device_id, device_name, device_type)
             chargerate: 3.8,
             ovms_vehicleid: '',
             ovms_carpass: '',
+            balpercentage: 0.9,
+            baltime: 45,
             ev_soc: 0.2,
             ev_target_soc: 0.8,
             ip: ''
@@ -125,7 +127,7 @@ function load_device(device_id, device_name, device_type)
                 
                 if (schedule.settings.device_type=="openevse" && schedule.settings.openevsecontroltype=='socovms') {
                     if (schedule.settings.ovms_vehicleid!='' && schedule.settings.ovms_carpass!='') {
-                        $.ajax({ url: emoncmspath+"demandshaper/ovms?vehicleid="+schedule.settings.ovms_vehicleid+"&carpass="+schedule.settings.ovms_carpass+apikeystr, dataType: 'json', async: true, success: function(result) {
+                        $.ajax({ url: emoncmspath+"demandshaper/ovms?vehicleid="+schedule.settings.ovms_vehicleid+"&carpass="+schedule.settings.ovms_carpass+apikeystr, dataType: 'json', async: true, function(){ 
                             schedule.settings.ev_soc = result.soc*0.01;
                             schedule.settings.period = ((schedule.settings.ev_target_soc-schedule.settings.ev_soc)*schedule.settings.batterycapacity)/schedule.settings.chargerate;
                             if (schedule.settings.ev_soc!=last_ev_soc) calc_schedule();                     
@@ -177,23 +179,27 @@ function load_device(device_id, device_name, device_type)
             setTimeout(function(){
                 if (((new Date()).getTime()-last_submit)>1900) {
                     submit_schedule(1,function(result){
-                        console.log("saved");
-                        
-                        // Check result
-                        if (js_calc) {
-                            if (JSON.stringify(result.schedule.runtime.periods)==JSON.stringify(schedule.runtime.periods)) { 
-                                console.log("php js schedule match"); 
-                            } else { 
-                                console.log("php js schedule match error")
-                                console.log("php: "+JSON.stringify(result.schedule.runtime.periods))
-                                console.log("js:  "+JSON.stringify(schedule.runtime.periods))
+                        if (result.schedule!=undefined) {
+                            console.log("saved");
+                            
+                            // Check result
+                            if (js_calc) {
+                                if (JSON.stringify(result.schedule.runtime.periods)==JSON.stringify(schedule.runtime.periods)) { 
+                                    console.log("php js schedule match"); 
+                                } else { 
+                                    console.log("php js schedule match error")
+                                    console.log("php: "+JSON.stringify(result.schedule.runtime.periods))
+                                    console.log("js:  "+JSON.stringify(schedule.runtime.periods))
+                                }
+                            } else {
+                                schedule.runtime.periods = result.schedule.runtime.periods
                             }
+                            
+                            clearTimeout(get_device_state_timeout)
+                            get_device_state_timeout = setTimeout(function(){ get_device_state(); },1000);
                         } else {
-                            schedule.runtime.periods = result.schedule.runtime.periods
+                            console.log(result);
                         }
-                        
-                        clearTimeout(get_device_state_timeout)
-                        get_device_state_timeout = setTimeout(function(){ get_device_state(); },1000);
                     });
                 }
             },2000);
@@ -262,10 +268,12 @@ function load_device(device_id, device_name, device_type)
         // Draw OpenEVSE specific items                            
         if (schedule.settings.device_type=="openevse") {
             $(".openevse").show();
-              
+            
             $('.input[name="openevsecontroltype"]').val(schedule.settings.openevsecontroltype);
             $('.input[name="batterycapacity"]').val(schedule.settings.batterycapacity);
             $('.input[name="chargerate"]').val(schedule.settings.chargerate);
+            $('.input[name="balpercentage"]').val(schedule.settings.balpercentage * 100);
+            $('.input[name="baltime"]').val(Math.round(schedule.settings.baltime * 60));
             
             if (schedule.settings.openevsecontroltype=="socinput" || schedule.settings.openevsecontroltype=="socovms") {
             
@@ -273,17 +281,21 @@ function load_device(device_id, device_name, device_type)
                 battery.charge_rate = schedule.settings.chargerate;
                 battery.end_soc = schedule.settings.ev_target_soc;
                 battery.soc = schedule.settings.ev_soc;
-                       
+                battery.balpercentage = schedule.settings.balpercentage;
+                battery.baltime = schedule.settings.baltime;
+
                 $("#battery_bound").show();
                 battery.init("battery");
                 battery.draw();
                 
                 $("#run_period").hide();
                 $("#run_period").parent().addClass('span2').removeClass('span4');
+                $(".openevse-balancing").show();
             } else {
                 $("#battery_bound").hide();
                 $("#run_period").show();
                 $("#run_period").parent().addClass('span4').removeClass('span2');
+                $(".openevse-balancing").hide();
             }
             
             if (schedule.settings.openevsecontroltype=="socovms") {
@@ -293,7 +305,6 @@ function load_device(device_id, device_name, device_type)
             } else {
                 $(".ovms-options").hide();
             }
-           
         }
     }
 
@@ -637,6 +648,8 @@ function load_device(device_id, device_name, device_type)
             schedule.settings[name] -= resolution_hours;
             if (schedule.settings[name]<0.0) schedule.settings[name] = 24.0-resolution_hours;
         }
+        
+        if (name=="period") schedule.runtime.timeleft = schedule.settings.period * 3600;
         calc_schedule();
     });
 
@@ -651,6 +664,8 @@ function load_device(device_id, device_name, device_type)
         hour = Math.round(hour/resolution_hours)*resolution_hours
         
         schedule.settings[name] = hour
+        
+        if (name=="period") schedule.runtime.timeleft = schedule.settings.period * 3600;
         calc_schedule(); 
     });
 
@@ -702,7 +717,7 @@ function load_device(device_id, device_name, device_type)
         battery.period = Math.round(battery.period/resolution_hours)*resolution_hours
         schedule.settings.period = battery.period
         schedule.settings.ev_target_soc = battery.end_soc
-        schedule.runtime.timeleft = schedule.settings.period * 3600
+        schedule.runtime.timeleft = schedule.settings.period * 3600;
         
         if (mode=="on") {
             var now = new Date();
@@ -739,14 +754,14 @@ function load_device(device_id, device_name, device_type)
     $('.input[name="batterycapacity"]').change(function(){
         var batterycapacity = $(this).val();
         schedule.settings.batterycapacity = batterycapacity*1.0;
-        battery.capacity = schedule.settings.batterycapacity;
+        if (schedule.settings.batterycapacity<0.0) schedule.settings.batterycapacity = 0.0;
         calc_schedule();
     });
 
     $('.input[name="chargerate"]').change(function(){
         var chargerate = $(this).val();
         schedule.settings.chargerate = chargerate*1.0;
-        battery.charge_rate = schedule.settings.chargerate;
+        if (schedule.settings.chargerate<0.0) schedule.settings.chargerate = 0.0;
         calc_schedule();
     });
     
@@ -761,6 +776,23 @@ function load_device(device_id, device_name, device_type)
         schedule.settings.ovms_carpass = carpass;
         calc_schedule();
     });
+
+    $('.input[name="balpercentage"]').change(function(){
+        var balpercentage = $(this).val();
+        schedule.settings.balpercentage = (balpercentage * 0.01);
+        if (schedule.settings.balpercentage<0.0) schedule.settings.balpercentage = 0.0;
+        if (schedule.settings.balpercentage>1.0) schedule.settings.balpercentage = 1.0;
+        calc_schedule();
+    });
+
+    $('.input[name="baltime"]').change(function(){
+        var baltime = $(this).val();
+        schedule.settings.baltime = baltime / 60;
+        if (schedule.settings.baltime<0.0) schedule.settings.baltime = 0.0;
+        if (schedule.settings.baltime>24.0) schedule.settings.baltime = 24.0;
+        calc_schedule();
+    });
+
     // ------------------------------------------------
     
     $("#delete-device-confirm").click(function(){

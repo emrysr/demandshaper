@@ -135,15 +135,21 @@
                               
           <div class="openevse hide">
             <div><span class="">Control based on: </span></td><td><select class="input" name="openevsecontroltype"><option value="time">Charge time</option><!--<option value="energy">Charge energy</option><option value="miles">Travel distance</option>--><option value="socinput">Battery charge level (Input)</option><option value="socovms">Battery charge level (OVMS)</option></select></div>
-
+            
             <div><span class="">Useable Battery Capacity: </span></td><td><input class="input" name="batterycapacity" type="text" style="width:80px"/> kWh</div>
                         
             <div><span class="">EVSE Charge Rate: </span></td><td><input class="input" name="chargerate" type="text" style="width:80px"/> kW</div>
 
-            <div class="ovms-options hide">
-              <span class="">OVMS Vehicle ID: </span></td><td><input class="input" name="vehicleid" type="text" style="width:150px"/>
-              <span class="">OVMS Car Password: </span></td><td><input class="input" name="carpass" type="text" style="width:150px"/>
+            <div class="openevse-balancing hide">
+              <div><span class="">Balancing Percentage: </span></td><td><input class="input" name="balpercentage" type="text" style="width:80px"/> %</div>
+              <div><span class="">Balancing Time: </span></td><td><input class="input" name="baltime" type="text" style="width:80px"/> Mins</div>
             </div>
+
+            <div class="ovms-options hide">
+              <div><span class="">OVMS Vehicle ID: </span></td><td><input class="input" name="vehicleid" type="text" style="width:150px"/></div>
+              <div><span class="">OVMS Car Password: </span></td><td><input class="input" name="carpass" type="text" style="width:150px"/></div>
+            </div>
+            
           </div>
                     
       </div> <!-- schedule-inner2 -->
