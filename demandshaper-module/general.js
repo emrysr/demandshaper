@@ -320,9 +320,9 @@ function load_device(device_id, device_name, device_type)
                 borderWidth:0,
                 hoverable: true, 
                 clickable: true
-            },
-            selection: { mode: "x" },
-            touch: { pan: "x", scale: "x" }
+            }
+            //selection: { mode: "x" },
+            //touch: { pan: "x", scale: "x" }
         };
       
         // --------------------------------------------------------------------------------------------
