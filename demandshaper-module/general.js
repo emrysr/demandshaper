@@ -263,9 +263,9 @@ function load_device(device_id, device_name, device_type)
         if (schedule.settings.device_type=="openevse") {
             $(".openevse").show();
               
-            $(".input[name=openevsecontroltype]").val(schedule.settings.openevsecontroltype);
-            $(".input[name=batterycapacity]").val(schedule.settings.batterycapacity);
-            $(".input[name=chargerate]").val(schedule.settings.chargerate);
+            $('.input[name="openevsecontroltype"]').val(schedule.settings.openevsecontroltype);
+            $('.input[name="batterycapacity"]').val(schedule.settings.batterycapacity);
+            $('.input[name="chargerate"]').val(schedule.settings.chargerate);
             
             if (schedule.settings.openevsecontroltype=="socinput" || schedule.settings.openevsecontroltype=="socovms") {
             
@@ -288,8 +288,8 @@ function load_device(device_id, device_name, device_type)
             
             if (schedule.settings.openevsecontroltype=="socovms") {
                 $(".ovms-options").show();
-                $(".input[name=vehicleid]").val(schedule.settings.ovms_vehicleid);
-                $(".input[name=carpass]").val(schedule.settings.ovms_carpass);
+                $('.input[name="vehicleid"]').val(schedule.settings.ovms_vehicleid);
+                $('.input[name="carpass"]').val(schedule.settings.ovms_carpass);
             } else {
                 $(".ovms-options").hide();
             }
@@ -731,32 +731,32 @@ function load_device(device_id, device_name, device_type)
     // ------------------------------------------------
     // openevse settings
     // ------------------------------------------------
-    $(".input[name=openevsecontroltype").change(function(){
+    $('.input[name="openevsecontroltype"]').change(function(){
         schedule.settings.openevsecontroltype =  $(this).val();
         calc_schedule();
     });
     
-    $(".input[name=batterycapacity").change(function(){
+    $('.input[name="batterycapacity"]').change(function(){
         var batterycapacity = $(this).val();
         schedule.settings.batterycapacity = batterycapacity*1.0;
         battery.capacity = schedule.settings.batterycapacity;
         calc_schedule();
     });
 
-    $(".input[name=chargerate").change(function(){
+    $('.input[name="chargerate"]').change(function(){
         var chargerate = $(this).val();
         schedule.settings.chargerate = chargerate*1.0;
         battery.charge_rate = schedule.settings.chargerate;
         calc_schedule();
     });
     
-    $(".input[name=vehicleid").change(function(){
+    $('.input[name="vehicleid"]').change(function(){
         var vehicleid = $(this).val();
         schedule.settings.ovms_vehicleid = vehicleid;
         calc_schedule();
     });
 
-    $(".input[name=carpass").change(function(){
+    $('.input[name="carpass"]').change(function(){
         var carpass = $(this).val();
         schedule.settings.ovms_carpass = carpass;
         calc_schedule();
