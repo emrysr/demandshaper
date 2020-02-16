@@ -160,7 +160,7 @@ function get_forecast($redis,$signal,$timezone) {
             $date->setTimezone(new DateTimeZone($timezone));
             
             $EL_signal = $result->DATA[0];
-            array_shift($EL_signal);
+            // array_shift($EL_signal);
             $len = count($EL_signal);
             
             $value = 0.5;
