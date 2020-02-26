@@ -38,8 +38,13 @@ function schedule_smart(forecast,timeleft,end,interruptible,resolution)
     // -------------------------------------------------------------------------------
     let upsampled = [];            
     
-    let profile_start = profile[0][0]*0.001;
-    let profile_end = profile[profile.length-1][0]*0.001;
+    let profile_start, profile_end;
+    try{
+	profile_start = profile[0][0]*0.001;
+        profile_end = profile[profile.length-1][0]*0.001;
+    } catch(error) {
+        console.error('problem loading forecast');
+    }
 
     for (let timestamp=profile_start; timestamp<profile_end; timestamp+=resolution) {
         let i = Math.floor((timestamp - profile_start)/1800);
